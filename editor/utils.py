@@ -1,0 +1,43 @@
+import os
+import io
+from pathlib import Path
+from PIL import Image
+from editor import settings
+
+
+def make_save_dir():
+    os.makedirs(Path(settings.BASE_DIR, settings.SAVE_DIR_NAME), exist_ok=True)
+    return Path(settings.BASE_DIR, settings.SAVE_DIR_NAME)
+
+
+def get_image_files_list(folder):
+    all_files = os.listdir(folder)
+    image_files = []
+    for file in all_files:
+        extension = file.lower().split(".")[-1]
+        if extension in ["jpg", "png", "jpeg", "jpe", "JPG"]:
+            image_files.append(file)
+    image_files.sort()
+    return image_files
+
+
+def get_image_by_file_name(filename):
+    return Image.open(filename)
+
+
+def get_image_by_kuwahara_filter(filtered_pic):
+    return Image.fromarray(filtered_pic)
+
+
+def get_resized_image(im, height, width):
+    height = round(height * (settings.MAX_PICTURE_WIDTH / width))
+    return im.resize((settings.MAX_PICTURE_WIDTH, height))
+
+
+def get_picture_data(im):
+    height, width = im.height, im.width
+    if width > settings.MAX_PICTURE_WIDTH:
+        im = get_resized_image(im, height, width)
+    im_bytes = io.BytesIO()
+    im.save(im_bytes, format="PNG")
+    return im_bytes.getvalue()
