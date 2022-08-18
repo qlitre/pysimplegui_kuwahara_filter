@@ -25,16 +25,16 @@ def get_image_by_file_name(filename: str) -> Image:
     return Image.open(filename)
 
 
-def get_image_by_kuwahara_filter(filtered_pic):
+def get_image_by_kuwahara_filter(filtered_pic) -> Image:
     return Image.fromarray(filtered_pic)
 
 
-def get_resized_image(im, height, width):
+def get_resized_image(im, height: int, width: int) -> Image:
     height = round(height * (settings.MAX_PICTURE_WIDTH / width))
     return im.resize((settings.MAX_PICTURE_WIDTH, height))
 
 
-def get_picture_data(im):
+def get_picture_data(im: Image) -> bytes:
     height, width = im.height, im.width
     if width > settings.MAX_PICTURE_WIDTH:
         im = get_resized_image(im, height, width)

@@ -4,7 +4,7 @@ import PySimpleGUI as sg
 class Frontend:
 
     @staticmethod
-    def column_left():
+    def column_left() -> list:
         widget_spin_label = sg.Text('Param')
         spin_values = [i for i in range(1, 21)]
         widget_spin_box = sg.Spin(values=spin_values,
@@ -44,14 +44,14 @@ class Frontend:
         ]
 
     @staticmethod
-    def column_center():
+    def column_center() -> list:
         return [[sg.Image(key="image_input", size=(800, 600))]]
 
     @staticmethod
-    def column_right():
+    def column_right() -> list:
         return [[sg.Image(key="image_output", size=(800, 600))]]
 
-    def layout(self):
+    def layout(self) -> list:
         return [
             [sg.Column(self.column_left(), pad=(0, 0), vertical_alignment='t'),
              sg.Column(self.column_center(), pad=(10, 30), vertical_alignment='t'),
