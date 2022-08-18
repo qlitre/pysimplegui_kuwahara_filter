@@ -4,7 +4,7 @@ image editor by pysimplegui using kuwahara filter
 ## Usage
 
 ```
-from editor.kuwahara_image_editor import Editor
+from pysimplegui_kuwahara_filter import Editor
 
 editor = Editor()
 editor.start()

@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
-from editor.kuwahara import get_kuwahara_filtered_pic
-from editor import utils
-from editor.gui_frontend import Frontend
+from pysimplegui_kuwahara_filter.kuwahara import get_kuwahara_filtered_pic
+from pysimplegui_kuwahara_filter import utils
+from pysimplegui_kuwahara_filter.gui_frontend import Frontend
 from pathlib import Path
 import os
 
@@ -80,8 +80,3 @@ class Editor:
 
             if event is None or event == 'Exit':
                 return None
-
-
-if __name__ == '__main__':
-    editor = Editor()
-    editor.start()

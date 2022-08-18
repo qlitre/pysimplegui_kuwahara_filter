@@ -2,7 +2,7 @@ import os
 import io
 from pathlib import Path
 from PIL import Image
-from editor import settings
+from pysimplegui_kuwahara_filter import settings
 
 
 def make_save_dir():
@@ -10,7 +10,7 @@ def make_save_dir():
     return Path(settings.BASE_DIR, settings.SAVE_DIR_NAME)
 
 
-def get_image_files_list(folder):
+def get_image_files_list(folder: str) -> list:
     all_files = os.listdir(folder)
     image_files = []
     for file in all_files:
@@ -21,7 +21,7 @@ def get_image_files_list(folder):
     return image_files
 
 
-def get_image_by_file_name(filename):
+def get_image_by_file_name(filename: str) -> Image:
     return Image.open(filename)
 
 
