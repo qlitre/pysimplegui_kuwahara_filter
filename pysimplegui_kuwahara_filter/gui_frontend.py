@@ -1,59 +1,94 @@
 import PySimpleGUI as sg
+from PySimpleGUI import Window
 
 
-class Frontend:
+class Widget:
+    """
+    GUI widget definition
+    """
+    # parameter input
+    label_spin = sg.Text('Param')
+    spin_box_param = sg.Spin(values=[i for i in range(1, 21)],
+                             initial_value=5,
+                             size=(5, 5),
+                             key='parameter',
+                             enable_events=True)
 
-    @staticmethod
-    def column_left() -> list:
-        widget_spin_label = sg.Text('Param')
-        spin_values = [i for i in range(1, 21)]
-        widget_spin_box = sg.Spin(values=spin_values,
-                                  initial_value=5,
-                                  size=(5, 5),
-                                  key='parameter',
-                                  enable_events=True)
+    # folder browse and show filelist
+    input_folder_name = sg.InputText(key="photo_folder", change_submits=True, size=(15, 1))
+    folder_browse = sg.FolderBrowse(target="photo_folder")
+    list_box_files = sg.Listbox(values=[''],
+                                change_submits=True,
+                                size=(15, 15),
+                                font=("Helvetica", 12),
+                                key="files_listbox")
 
-        col_param = sg.Column([[widget_spin_label],
-                               [widget_spin_box]], vertical_alignment='bottom')
+    # show kuwahara image button and save
+    button_show_kuwahara = sg.Button('Filter', key='filter')
+    button_save = sg.Button('Save', key='save')
+    # exit button
+    button_exit = sg.Button('Exit', key='exit', pad=((0, 0), (10, 0)))
 
-        widget_exit_button = sg.Button('Exit', key='exit', pad=((0, 0), (10, 0)))
-        widget_show_kuwahara_button = sg.Button('Filter', key='filter')
-        widget_save_button = sg.Button('Save', key='save')
-        col_control = sg.Column([[widget_show_kuwahara_button, widget_save_button]], vertical_alignment='bottom')
+    # input and output image
+    image_input = sg.Image(key="image_input", size=(800, 600))
+    image_output = sg.Image(key="image_output", size=(800, 600))
+
+
+class Frontend(Widget):
+    """
+    GUI frontend(layout) definition
+    """
+    window_title: str = 'Pysimple Kuwahara Editor'
+    window_size: tuple = (1300, 600)
+
+    def column_left(self) -> list:
+        """
+        gui left side, its control area
+        """
+        col_param = sg.Column([[self.label_spin],
+                               [self.spin_box_param]], vertical_alignment='bottom')
+
+        col_control = sg.Column([[self.button_show_kuwahara, self.button_save]], vertical_alignment='bottom')
         frame_control = sg.Frame('control', [
             [col_param, col_control]
         ])
 
-        widget_folder_name = sg.InputText(key="photo_folder", change_submits=True, size=(15, 1))
-        widget_folder_browse = sg.FolderBrowse(target="photo_folder")
-        widget_list_box = sg.Listbox(values=[''],
-                                     change_submits=True,  # trigger an event whenever an item is selected
-                                     size=(15, 15),
-                                     font=("Helvetica", 12),
-                                     key="files_listbox")
         frame_file_list = sg.Frame('Choice Folder And Picture', [
-            [widget_folder_name, widget_folder_browse],
-            [widget_list_box]
+            [self.input_folder_name, self.folder_browse],
+            [self.list_box_files]
         ])
 
         return [
             [frame_file_list],
             [sg.T('Input Param And Update...', pad=((0, 0), (10, 0)))],
             [frame_control],
-            [widget_exit_button]
+            [self.button_exit]
         ]
 
-    @staticmethod
-    def column_center() -> list:
-        return [[sg.Image(key="image_input", size=(800, 600))]]
+    def column_center(self) -> list:
+        """
+        gui center, its input image area
+        """
+        return [[self.image_input]]
 
-    @staticmethod
-    def column_right() -> list:
-        return [[sg.Image(key="image_output", size=(800, 600))]]
+    def column_right(self) -> list:
+        """
+        gui right side, its output image are
+        """
+        return [[self.image_output]]
 
     def layout(self) -> list:
+        """
+        return GUI Layout
+        """
         return [
             [sg.Column(self.column_left(), pad=(0, 0), vertical_alignment='t'),
              sg.Column(self.column_center(), pad=(10, 30), vertical_alignment='t'),
              sg.Column(self.column_right(), pad=(10, 30), vertical_alignment='t')],
         ]
+
+    def window(self) -> Window:
+        """
+        return GUI Window
+        """
+        return sg.Window(self.window_title, size=self.window_size, finalize=True, layout=self.layout())

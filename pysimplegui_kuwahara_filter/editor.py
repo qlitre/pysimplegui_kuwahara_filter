@@ -5,19 +5,18 @@ from pysimplegui_kuwahara_filter.gui_frontend import Frontend
 from pathlib import Path
 import os
 from PIL import Image
-from PySimpleGUI import Window
 
 
 class Editor:
-    window_title = 'Pysimple Kuwahara Editor'
-    window_size = (1300, 600)
-    layout = Frontend().layout()
+    """
+    Gui Image Editor
+    """
 
     def __init__(self):
-        self.file_name = ''
-        self.parameter = 5
-        self.kuwahara_image = None
-        self.window = self.window()
+        self.window = Frontend().window()
+        self.file_name: str = ''
+        self.parameter: int = 5
+        self.kuwahara_image: Image = None
 
     def set_file_name(self, file_name: str) -> None:
         self.file_name = file_name
@@ -28,22 +27,22 @@ class Editor:
     def set_kuwahara_image(self, kuwahara_image: Image) -> None:
         self.kuwahara_image = kuwahara_image
 
-    def window(self) -> Window:
-        return sg.Window(self.window_title, size=self.window_size).Layout(self.layout)
-
-    def show_image(self) -> None:
+    def show_input_image(self) -> None:
+        """display input image on gui"""
         pic = utils.get_image_by_file_name(self.file_name)
-        pic_data = utils.get_picture_data(pic)
+        pic_data = utils.get_picture_bytes_data(pic)
         self.window.find_element("image_input").Update(data=pic_data)
 
     def show_kuwahara_image(self) -> None:
+        """display output image on gui"""
         filtered_pic = get_kuwahara_filtered_pic(self.file_name, r=self.parameter)
         kuwahara_image = utils.get_image_by_kuwahara_filter(filtered_pic)
         self.set_kuwahara_image(kuwahara_image)
-        kuwahara_data = utils.get_picture_data(kuwahara_image)
+        kuwahara_data = utils.get_picture_bytes_data(kuwahara_image)
         self.window.find_element("image_output").Update(data=kuwahara_data)
 
     def save_picture(self) -> None:
+        """save output image to local directory"""
         save_dir = utils.make_save_dir()
         pic_name = os.path.basename(self.file_name)
         pic_name, extension = pic_name.lower().split(".")
@@ -53,6 +52,7 @@ class Editor:
         sg.Popup(msg)
 
     def start(self) -> None:
+        """gui event start"""
         folder = ''
         while True:
             event, values = self.window.Read()
@@ -65,7 +65,7 @@ class Editor:
             if event == "files_listbox":
                 full_filename = os.path.join(folder, values["files_listbox"][0])
                 self.set_file_name(full_filename)
-                self.show_image()
+                self.show_input_image()
 
             if event == "parameter":
                 param = values['parameter']
@@ -80,5 +80,6 @@ class Editor:
                 if self.kuwahara_image:
                     self.save_picture()
 
-            if event is None or event == 'Exit':
+            if event is None or event == 'exit':
+                self.window.close()
                 return None

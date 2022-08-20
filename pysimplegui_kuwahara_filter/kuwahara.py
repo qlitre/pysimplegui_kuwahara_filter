@@ -4,7 +4,10 @@ from numpy import ndarray
 import matplotlib.pyplot as plt
 
 
-def get_kuwahara_filtered_pic(full_filename: str, r: int = 10) -> ndarray:  # 元画像、正方形領域の一辺
+def get_kuwahara_filtered_pic(full_filename: str, r: int = 10) -> ndarray:
+    """
+    return kuwahara filtered pic data as numpy ndarray
+    """
     pic = np.array(plt.imread(full_filename))
     h, w, _ = pic.shape
 
